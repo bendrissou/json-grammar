@@ -12,5 +12,4 @@ null "null"
 [0-9a-f] "HEX_DIGIT"
 ["] "DBL_QUOTE"
 [\t ]+ ;
-. "ERROR"
-
+. "UNMATCHED"

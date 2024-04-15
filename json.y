@@ -1,3 +1,4 @@
+%expect-unused unmatched "UNMATCHED"
 %start start
 %%
 start -> Result<String, ()>:
@@ -40,8 +41,11 @@ string -> Result<String, ()>:
             Err(_) => Ok(String::from("abc"))
       }
       }
-    | 'ERROR' { Ok(String::from("x")) }
     ;
+
+unmatched -> ():
+  "UNMATCHED" { } 
+  ;
 
 %%
 
@@ -49,6 +53,3 @@ string -> Result<String, ()>:
 
 // Use rand to insert random integers when repairing
 use rand::Rng;
-
-
-
