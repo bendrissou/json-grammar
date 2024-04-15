@@ -35,7 +35,7 @@ value -> Result<String, ()>:
       'null' { Ok(String::from("null")) }
     | 'true' { Ok(String::from("true")) }
     | 'false' { Ok(String::from("false")) }
-    | 'INT' {
+    | 'NUM' {
       match $1 {
             Ok(val) => Ok(String::from($lexer.span_str(val.span()))),
             Err(_) => Ok(rand::thread_rng().gen_range(0..=100).to_string())
@@ -47,9 +47,9 @@ value -> Result<String, ()>:
     ;
 
 string -> Result<String, ()>:
-      '"' 'STRING' '"' {
-      match $2 {
-            Ok(val) => Ok(String::from("\"") + $lexer.span_str(val.span()) + "\""),
+      'STRING' {
+      match $1 {
+            Ok(val) => Ok(String::from($lexer.span_str(val.span()))),
             Err(_) => Ok(String::from("\"abc\""))
       }
       }
