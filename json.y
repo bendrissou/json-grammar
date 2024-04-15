@@ -2,7 +2,7 @@
 %start start
 %%
 start -> Result<String, ()>:
-      obj { $1 }
+      value { $1 }
     ;
 
 obj -> Result<String, ()>:
@@ -21,6 +21,16 @@ pair -> Result<String, ()>:
       }
     ;
 
+arr -> Result<String, ()>:
+      '[' entries ']' { Ok(String::from("[") + &$2? + "]") }
+    | '[' ']' { Ok(String::from("[]")) }
+    ;
+
+entries -> Result<String, ()>:
+      value { Ok($1?) }
+    | value ',' entries { Ok($1? + "," + &$3?) }
+    ;
+
 value -> Result<String, ()>:
       'null' { Ok(String::from("null")) }
     | 'true' { Ok(String::from("true")) }
@@ -32,13 +42,15 @@ value -> Result<String, ()>:
       }
       }
     | string { Ok($1?) }
+    | obj { Ok($1?) }
+    | arr { Ok($1?) }
     ;
 
 string -> Result<String, ()>:
-      'STRING' {
-      match $1 {
-            Ok(val) => Ok(String::from($lexer.span_str(val.span()))),
-            Err(_) => Ok(String::from("abc"))
+      '"' 'STRING' '"' {
+      match $2 {
+            Ok(val) => Ok(String::from("\"") + $lexer.span_str(val.span()) + "\""),
+            Err(_) => Ok(String::from("\"abc\""))
       }
       }
     ;
